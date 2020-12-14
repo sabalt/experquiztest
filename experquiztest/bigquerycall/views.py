@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from google.cloud import bigquery
+import re
 
 
 
@@ -15,6 +16,13 @@ def index(request):
     'LIMIT 5'
     )
     results = client.query(query)
+    licenses = []
+    totals = []
     for row in results:
-        print("{} : {} views".format(row.license, row.total))
-    return render(request, 'bigquerycall/index.html')
+        licenses.append(row.license)
+        totals.append(row.total)
+    context = {
+        'licenses': licenses,
+        'totals': totals
+    }
+    return render(request, 'bigquerycall/index.html', context)
